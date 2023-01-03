@@ -16,7 +16,7 @@ class ViewController: UIViewController {
         return textView.text.split(separator: " ").map { "\($0)" }
     }
     
-    // Error check computed variables
+    // Error check computed variables, to add in a calculus class elements related ones
     var expressionIsCorrect: Bool {
         return elements.last != "+" && elements.last != "-"
     }
@@ -41,6 +41,10 @@ class ViewController: UIViewController {
     
     
     // View actions
+    @IBAction func tappedCancelButton(_ sender: UIButton) {
+            textView.text = ""
+    }
+    
     @IBAction func tappedNumberButton(_ sender: UIButton) {
         guard let numberText = sender.title(for: .normal) else {
             return
@@ -92,7 +96,9 @@ class ViewController: UIViewController {
              self.present(alertVC, animated: true, completion: nil)
          }
      }
-
+        // add AC button to reset the text field
+    // priority operator and treat operation by packet
+    
 
     @IBAction func tappedEqualButton(_ sender: UIButton) {
         guard expressionIsCorrect else {
@@ -109,6 +115,10 @@ class ViewController: UIViewController {
         
         // Create local copy of operations
         var operationsToReduce = elements
+        operationsToReduce.firstIndex(of: "x")
+        
+        operationsToReduce.firstIndex(of: "/")
+        
         
         // Iterate over operations while an operand still here
         while operationsToReduce.count > 1 {
@@ -128,6 +138,8 @@ class ViewController: UIViewController {
             operationsToReduce = Array(operationsToReduce.dropFirst(3))
             operationsToReduce.insert("\(result)", at: 0)
         }
+        // indexof to use to drop proper elements
+        // add result of multiply and divide at the beginning of table then process with the remaining calculus
         
         textView.text.append(" = \(operationsToReduce.first!)")
     }
