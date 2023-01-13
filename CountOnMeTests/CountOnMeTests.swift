@@ -7,6 +7,7 @@
 //
 
 import XCTest
+@testable import CountOnMe
 
 final class CountOnMeTests: XCTestCase {
 
@@ -33,4 +34,49 @@ final class CountOnMeTests: XCTestCase {
         }
     }
 
+}
+
+class Test {
+    func testAddition() {
+      let calculator = Calculator()
+      let result = calculator.calculate(operation: "2+2")
+      XCTAssertEqual("\(result)", "4")
+    }
+    
+    func testSoustraction() {
+      let calculator = Calculator()
+        let result = calculator.calculate(operation:"2-2")
+      XCTAssertEqual("\(result)", "0")
+    }
+    
+    func testMultiplication() {
+      let calculator = Calculator()
+        let result = calculator.calculate(operation:"3*2")
+      XCTAssertEqual("\(result)", "6")
+    }
+    
+    func testDivision() {
+      let calculator = Calculator()
+        let result = calculator.calculate(operation:"10/2")
+      XCTAssertEqual("\(result)", "5")
+    }
+    
+    func testMultiplicationAndAddition() {
+        let calculator = Calculator()
+        let result = calculator.calculate(operation:"3*2+7")
+        XCTAssertEqual("\(result)", "13")
+    }
+    
+    func testDivisionAndSoustraction() {
+        let calculator = Calculator()
+        let result = calculator.calculate(operation:"10/2-3")
+        XCTAssertEqual("\(result)", "2")
+    }
+    
+    func testDivisionByZero() {
+        let calculator = Calculator()
+        let result = calculator.calculate(operation:"58/0")
+        XCTAssertEqual("\(result)", "Erreur ! Division par 0 impossible.")
+    }
+    
 }
