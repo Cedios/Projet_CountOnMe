@@ -8,63 +8,88 @@
 
 import Foundation
 
+ 
 
 class Calculator {
-
-    func calculate(operation: String) -> Int {
-         /// logique de calcul & remplacer operationsToReduce par le paramètre
-        /// var elements: [String] {
-     
+    enum CalculatorError : Error {
+        case invalidOperation
+        case divideByZero
+        
+    }
+    
+    func calculate(operation: String) throws -> String {
+        
+        
         var operationsToReduce = operation.split(separator: " ").map { "\($0)" }
-        let result: Int
+        var result: Double = 0
+
         
         while operationsToReduce.count > 1 {
+
+            var operandIndex: Int
             
-            if operationsToReduce.contains("x") {
-                
-                let operand = String(operationsToReduce.firstIndex(of: "x")!)
-                let left = Int(exactly: operationsToReduce.index(before: operationsToReduce.firstIndex(of: "x")!))!
-                let right = Int(exactly: operationsToReduce.index(after: operationsToReduce.firstIndex(of: "x")!))!
-                
-                let result: Int
-                result = left * right
-                operationsToReduce = Array(operationsToReduce.drop([operationsToReduce.firstIndex(of: "x")]))
-                operationsToReduce.insert("\(result)", at: 0)
-                
+            // Looking for multiply sign
+            if  let multiplyIndex = operationsToReduce.firstIndex(of: "x") {
+                operandIndex = multiplyIndex
+            }
+            // Looking for divide sign
+            else if let divideIndex = operationsToReduce.firstIndex(of: "/") {
+                operandIndex = divideIndex
             }
             
-            else if operationsToReduce.contains("/") {
-                let operand = String(operationsToReduce.firstIndex(of: "/")!)
-                let left = Int(exactly: operationsToReduce.index(before: operationsToReduce.firstIndex(of: "/")!))!
-                let right = Int(exactly: operationsToReduce.index(after: operationsToReduce.firstIndex(of: "/")!))!
-                result = left / right
-                
-                // operationsToReduce = Array(operationsToReduce.drop)
-                // operationsToReduce.insert("\(result)", at: 0)
-                
+            else if let additionIndex = operationsToReduce.firstIndex(of: "+") {
+                operandIndex = additionIndex
             }
             
+            else if let soustractionIndex = operationsToReduce.firstIndex(of: "-") {
+                operandIndex = soustractionIndex
+            }
             else {
-                
-                let left = Int(operationsToReduce[0])!
-                let operand = operationsToReduce[1]
-                let right = Int(operationsToReduce[2])!
-                
-                let result: Int
-                switch operand {
-                case "+": result = left + right
-                case "-": result = left - right
-                default: fatalError("Unknown operator !")
+                guard operationsToReduce.count == 1 else{
+                    throw CalculatorError.invalidOperation
                 }
-                
-                operationsToReduce = Array(operationsToReduce.dropFirst(3))
-                operationsToReduce.insert("\(result)", at: 0)
+                result = Double(operationsToReduce.first!)!
+                return String(result)
             }
-            // indexof to use to drop proper elements
-            // add result of multiply and divide at the beginning of table then process with the remaining calculus
+
+            // Assign value to left and right, check if both indexes are in the array, check if both are integers
+            let leftIndex = Int(operandIndex - 1)
+            let rightIndex = Int(operandIndex + 1)
             
-            result = Int(operationsToReduce.first!)!
+            guard leftIndex >= 0 && rightIndex < operationsToReduce.count else {
+                throw CalculatorError.invalidOperation
+            }
+            guard
+                let left = Double(operationsToReduce[leftIndex]),
+                let right = Double(operationsToReduce[rightIndex]) else {
+                throw CalculatorError.invalidOperation
+            }
+           
+            // Collecting operand type and depending on it which calculus should be made
+            let operand = operationsToReduce[operandIndex]
+            
+            switch operand {
+            case "x": result = left * right
+            case "/":
+                guard right != 0 else {
+                    throw CalculatorError.divideByZero
+                }
+                result = left / right
+            case "+": result = left + right
+            case "-": result = left - right
+            default: break
+            }
+            
+            // Dropping numbers from operationsToReduce and inserting result at left index
+            operationsToReduce.remove(at: operandIndex + 1)
+            operationsToReduce.remove(at: operandIndex)
+            operationsToReduce.remove(at: operandIndex - 1)
+            operationsToReduce.insert("\(result)", at: operandIndex - 1)
+            
+            
         }
-        return result
+        return String(result)
     }
+
 }
+ // manage error

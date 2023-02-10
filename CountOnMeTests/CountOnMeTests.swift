@@ -11,72 +11,202 @@ import XCTest
 
 final class CountOnMeTests: XCTestCase {
 
-    override func setUpWithError() throws {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
-    }
-
-    override func tearDownWithError() throws {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
-    }
-
-    func testExample() throws {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-        // Any test you write for XCTest can be annotated as throws and async.
-        // Mark your test throws to produce an unexpected failure when your test encounters an uncaught error.
-        // Mark your test async to allow awaiting for asynchronous code to complete. Check the results with assertions afterwards.
-    }
-
-    func testPerformanceExample() throws {
-        // This is an example of a performance test case.
-        measure {
-            // Put the code you want to measure the time of here.
-        }
-    }
-
-}
-
-class Test {
     func testAddition() {
       let calculator = Calculator()
-      let result = calculator.calculate(operation: "2+2")
-      XCTAssertEqual("\(result)", "4")
+        let result = try? calculator.calculate(operation: "2 + 2")
+      XCTAssertEqual(result, "4.0")
     }
     
     func testSoustraction() {
       let calculator = Calculator()
-        let result = calculator.calculate(operation:"2-2")
-      XCTAssertEqual("\(result)", "0")
+        let result = try? calculator.calculate(operation:"2 - 2")
+      XCTAssertEqual(result, "0.0")
     }
     
     func testMultiplication() {
       let calculator = Calculator()
-        let result = calculator.calculate(operation:"3*2")
-      XCTAssertEqual("\(result)", "6")
+        let result = try? calculator.calculate(operation:"3 x 2")
+      XCTAssertEqual(result, "6.0")
     }
     
     func testDivision() {
       let calculator = Calculator()
-        let result = calculator.calculate(operation:"10/2")
-      XCTAssertEqual("\(result)", "5")
+        let result = try? calculator.calculate(operation:"10 / 2")
+      XCTAssertEqual(result, "5.0")
     }
     
     func testMultiplicationAndAddition() {
         let calculator = Calculator()
-        let result = calculator.calculate(operation:"3*2+7")
-        XCTAssertEqual("\(result)", "13")
+        let result = try? calculator.calculate(operation:"3 x 2 + 7")
+        XCTAssertEqual(result, "13.0")
     }
     
     func testDivisionAndSoustraction() {
         let calculator = Calculator()
-        let result = calculator.calculate(operation:"10/2-3")
-        XCTAssertEqual("\(result)", "2")
+        let result = try? calculator.calculate(operation:"10 / 2 - 3")
+        XCTAssertEqual(result, "2.0")
+    }
+    func testDivisionAndSoustractionResultingInDouble() {
+        let calculator = Calculator()
+        let result = try! calculator.calculate(operation:"5 / 3 + 2")
+        XCTAssertEqual(Double(result)!, 3.6, accuracy: 0.1)
     }
     
     func testDivisionByZero() {
         let calculator = Calculator()
-        let result = calculator.calculate(operation:"58/0")
-        XCTAssertEqual("\(result)", "Erreur ! Division par 0 impossible.")
+        do {
+            _ = try calculator.calculate(operation:"58 / 0")
+            XCTFail("Divide by Zero not successful")
+        }
+        catch(let error as Calculator.CalculatorError) {
+            XCTAssertEqual(error, .divideByZero)
+        }
+        catch {
+            XCTFail("Divide by Zero not successful")
+        }
+    }
+
+    func testMultiplicationAndAddition2() {
+        let calculator = Calculator()
+        let result = try? calculator.calculate(operation:"7 + 3 x 2")
+        XCTAssertEqual(result, "13.0")
     }
     
+
+    func testInvalidOperations() {
+        let calculator = Calculator()
+        do {
+            _ = try calculator.calculate(operation:"7 +")
+            XCTFail("Operation shouldn't succeed")
+        }
+        catch(let error as Calculator.CalculatorError) {
+            XCTAssertEqual(error, .invalidOperation)
+        }
+        catch {
+            XCTFail("Divide by Zero not successful")
+        }
+        do {
+            _ = try calculator.calculate(operation:"+ 7")
+            XCTFail("Operation shouldn't succeed")
+        }
+        catch(let error as Calculator.CalculatorError) {
+            XCTAssertEqual(error, .invalidOperation)
+        }
+        catch {
+            XCTFail("Divide by Zero not successful")
+        }
+        do {
+            _ = try calculator.calculate(operation:"x 7")
+            XCTFail("Operation shouldn't succeed")
+        }
+        catch(let error as Calculator.CalculatorError) {
+            XCTAssertEqual(error, .invalidOperation)
+        }
+        catch {
+            XCTFail("Divide by Zero not successful")
+        }
+        do {
+            _ = try calculator.calculate(operation:"/ 7")
+            XCTFail("Operation shouldn't succeed")
+        }
+        catch(let error as Calculator.CalculatorError) {
+            XCTAssertEqual(error, .invalidOperation)
+        }
+        catch {
+            XCTFail("Divide by Zero not successful")
+        }
+        do {
+            _ = try calculator.calculate(operation:"7 x")
+            XCTFail("Operation shouldn't succeed")
+        }
+        catch(let error as Calculator.CalculatorError) {
+            XCTAssertEqual(error, .invalidOperation)
+        }
+        catch {
+            XCTFail("Divide by Zero not successful")
+        }
+        do {
+            _ = try calculator.calculate(operation:"7 /")
+            XCTFail("Operation shouldn't succeed")
+        }
+        catch(let error as Calculator.CalculatorError) {
+            XCTAssertEqual(error, .invalidOperation)
+        }
+        catch {
+            XCTFail("Divide by Zero not successful")
+        }
+        do {
+            _ = try calculator.calculate(operation:"a / b")
+            XCTFail("Operation shouldn't succeed")
+        }
+        catch(let error as Calculator.CalculatorError) {
+            XCTAssertEqual(error, .invalidOperation)
+        }
+        catch {
+            XCTFail("Divide by Zero not successful")
+        }
+        do {
+            _ = try calculator.calculate(operation:"a x b")
+            XCTFail("Operation shouldn't succeed")
+        }
+        catch(let error as Calculator.CalculatorError) {
+            XCTAssertEqual(error, .invalidOperation)
+        }
+        catch {
+            XCTFail("Divide by Zero not successful")
+        }
+        do {
+            _ = try calculator.calculate(operation:"a + b")
+            XCTFail("Operation shouldn't succeed")
+        }
+        catch(let error as Calculator.CalculatorError) {
+            XCTAssertEqual(error, .invalidOperation)
+        }
+        catch {
+            XCTFail("Divide by Zero not successful")
+        }
+        do {
+            _ = try calculator.calculate(operation:"a - b")
+            XCTFail("Operation shouldn't succeed")
+        }
+        catch(let error as Calculator.CalculatorError) {
+            XCTAssertEqual(error, .invalidOperation)
+        }
+        catch {
+            XCTFail("Divide by Zero not successful")
+        }
+        do {
+            _ = try calculator.calculate(operation:"a x")
+            XCTFail("Operation shouldn't succeed")
+        }
+        catch(let error as Calculator.CalculatorError) {
+            XCTAssertEqual(error, .invalidOperation)
+        }
+        catch {
+            XCTFail("Divide by Zero not successful")
+        }
+        do {
+            _ = try calculator.calculate(operation:"a /")
+            XCTFail("Operation shouldn't succeed")
+        }
+        catch(let error as Calculator.CalculatorError) {
+            XCTAssertEqual(error, .invalidOperation)
+        }
+        catch {
+            XCTFail("Divide by Zero not successful")
+        }
+        do {
+            _ = try calculator.calculate(operation:"2 : 1")
+            XCTFail("Operation shouldn't succeed")
+        }
+        catch(let error as Calculator.CalculatorError) {
+            XCTAssertEqual(error, .invalidOperation)
+        }
+        catch {
+            XCTFail("Divide by Zero not successful")
+        }
+    }
+
+
 }
+

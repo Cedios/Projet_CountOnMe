@@ -18,13 +18,7 @@ class ViewController: UIViewController {
     }
     
     // Error check computed variables, to add in a calculus class elements related ones
-    var expressionIsCorrect: Bool {
-        return elements.last != "+" && elements.last != "-"
-    }
-    
-    var expressionHaveEnoughElement: Bool {
-        return elements.count >= 3
-    }
+
     
     var canAddOperator: Bool {
         return elements.last != "+" && elements.last != "-"
@@ -97,27 +91,32 @@ class ViewController: UIViewController {
             self.present(alertVC, animated: true, completion: nil)
         }
     }
-    // add AC button to reset the text field
     
     
     @IBAction func tappedEqualButton(_ sender: UIButton) {
-        guard expressionIsCorrect else {
-            let alertVC = UIAlertController(title: "Zéro!", message: "Entrez une expression correcte !", preferredStyle: .alert)
-            alertVC.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
-            return self.present(alertVC, animated: true, completion: nil)
-        }
-        
-        guard expressionHaveEnoughElement else {
-            let alertVC = UIAlertController(title: "Zéro!", message: "Démarrez un nouveau calcul !", preferredStyle: .alert)
-            alertVC.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
-            return self.present(alertVC, animated: true, completion: nil)
-        }
-        
+       
         // Create local copy of operations
         
         let calculator = Calculator()
-        let result = calculator.calculate(operation: textView.text)
-
+        do {
+            let result = try calculator.calculate(operation: textView.text)
+            textView.text = result
+            
+        }
+        catch(let error as Calculator.CalculatorError){
+            switch error {
+            case .divideByZero:
+                let alertVC = UIAlertController(title: "Zéro!", message: "Division par zéro interdite !", preferredStyle: .alert)
+                alertVC.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
+                self.present(alertVC, animated: true, completion: nil)
+            case .invalidOperation:
+                let alertVC = UIAlertController(title: "Zéro!", message: "Opération incorrecte !", preferredStyle: .alert)
+                alertVC.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
+                self.present(alertVC, animated: true, completion: nil)
+            }
+        }
+        catch {
+        }
     }
     
 }
