@@ -46,6 +46,7 @@ final class CountOnMeTests: XCTestCase {
         let result = try? calculator.calculate(operation:"10 / 2 - 3")
         XCTAssertEqual(result, "2.0")
     }
+    
     func testDivisionAndSoustractionResultingInDouble() {
         let calculator = Calculator()
         let result = try! calculator.calculate(operation:"5 / 3 + 2")

@@ -14,25 +14,22 @@ class Calculator {
     enum CalculatorError : Error {
         case invalidOperation
         case divideByZero
-        
     }
     
+    /* Divide the string received as parameter in elements. Looks for the operand, then does the operation.
+     It repeats it until there's only one element left to return as a result.*/
     func calculate(operation: String) throws -> String {
-        
-        
         var operationsToReduce = operation.split(separator: " ").map { "\($0)" }
         var result: Double = 0
 
-        
         while operationsToReduce.count > 1 {
 
             var operandIndex: Int
             
-            // Looking for multiply sign
             if  let multiplyIndex = operationsToReduce.firstIndex(of: "x") {
                 operandIndex = multiplyIndex
             }
-            // Looking for divide sign
+
             else if let divideIndex = operationsToReduce.firstIndex(of: "/") {
                 operandIndex = divideIndex
             }
@@ -85,11 +82,8 @@ class Calculator {
             operationsToReduce.remove(at: operandIndex)
             operationsToReduce.remove(at: operandIndex - 1)
             operationsToReduce.insert("\(result)", at: operandIndex - 1)
-            
-            
         }
         return String(result)
     }
-
 }
- // manage error
+
